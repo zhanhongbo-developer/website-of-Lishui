@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .search-bar {
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-bar input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .categories {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding: 5px 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .category-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .company-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease;
+        }
+
+        .company-card:active {
+            transform: scale(0.98);
+        }
+
+        .company-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            margin-right: 12px;
+            object-fit: cover;
+        }
+
+        .company-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .company-name {
+            margin: 0 0 5px 0;
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e8f5e9;
+            color: #4CAF50;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .detail-header {
+            background: #1976D2;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            margin: -15px -15px 0;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            z-index: 1;
+            padding: 8px;
+            line-height: 1;
+        }
+
+        .detail-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: -20px;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .core-business {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .business-card {
+            text-align: center;
+            padding: 20px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .business-card img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .awards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .award-item img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .award-item p {
+            text-align: center;
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .contact-info div {
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-info div:last-child {
+            margin-bottom: 0;
+        }
+
+        #companyList, #companyDetail {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .detail-header {
+                padding: 30px 15px;
+                margin: -12px -12px 0;
+            }
+
+            .detail-content {
+                padding: 15px;
+                border-radius: 12px;
+            }
+
+            .core-business {
+                grid-template-columns: 1fr;
+            }
+
+            .awards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .award-item img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="companyList" style="display: block;">
+        <div class="container">
+            <div class="search-bar">
+                <input type="text" placeholder="搜索企业名称" />
+            </div>
+            
+            <div class="categories">
+                <button class="category-btn active">全部</button>
+                <button class="category-btn">制造业</button>
+                <button class="category-btn">科技服务</button>
+                <button class="category-btn">金融服务</button>
+                <button class="category-btn">教育科技</button>
+            </div>
+
+            <div id="companiesContainer"></div>
+        </div>
+    </div>
+
+    <div id="companyDetail" style="display: none;">
+        <div class="container">
+            <div class="detail-header">
+                <a href="#" class="back-btn" onclick="showList(); return false;">←</a>
+                <h1 id="companyName">公司名称</h1>
+                <p>创新科技 智领未来</p>
+            </div>
+
+            <div class="detail-content">
+                <div class="section">
+                    <h2>企业简介</h2>
+                    <p>深圳市智创科技有限公司成立于2010年，是一家专注于人工智能和物联网技术研发的高新技术企业。公司拥有完整的研发、生产、销售体系，产品已成功打入国内外市场。</p>
+                </div>
+
+                <div class="section">
+                    <h2>核心业务</h2>
+                    <div class="core-business">
+                        <div class="business-card">
+                            <img src="images/card0.png" alt="AI解决方案" />
+                            <h3>AI解决方案</h3>
+                            <p>智能算法优化</p>
+                        </div>
+                        <div class="business-card">
+                            <img src="images/card1.png" alt="物联网平台" />
+                            <h3>物联网平台</h3>
+                            <p>智能设备互联</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>企业荣誉</h2>
+                    <div class="awards">
+                        <div class="award-item">
+                            <img src="images/card0.png" alt="高新技术企业" />
+                            <p>高新技术企业</p>
+                        </div>
+                        <div class="award-item">
+                            <img src="images/card1.png" alt="创新企业奖" />
+                            <p>创新企业奖</p>
+                        </div>
+                        <div class="award-item">
+                            <img src="images/card0.png" alt="ISO9001认证" />
+                            <p>ISO9001认证</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>联系我们</h2>
+                    <div class="contact-info">
+                        <div>电话：0755-88888888</div>
+                        <div>邮箱：contact@smarttech.com</div>
+                        <div>地址：广东省深圳市南山区科技园科技中路 1号科技大厦 A座 15楼</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const companies = [
+            {
+                id: 1,
+                name: '深圳市智慧科技有限公司',
+                tags: ['高新技术企业', '人工智能'],
+                logo: 'images/card0.png'
+            },
+            {
+                id: 2,
+                name: '广州恒信金融服务有限公司',
+                tags: ['金融科技', '普惠金融'],
+                logo: 'images/card1.png'
+            },
+            {
+                id: 3,
+                name: '北京未来教育科技有限公司',
+                tags: ['在线教育', 'K12教育'],
+                logo: 'images/card0.png'
+            },
+            {
+                id: 4,
+                name: '东莞市创新制造股份有限公司',
+                tags: ['智能制造', '工业4.0'],
+                logo: 'images/card1.png'
+            },
+            {
+                id: 5,
+                name: '上海生物医药研究院有限公司',
+                tags: ['生物科技', '医疗健康'],
+                logo: 'images/card0.png'
+            }
+        ];
+
+        function renderCompanies() {
+            const container = document.getElementById('companiesContainer');
+            container.innerHTML = companies.map(company => `
+                <a class="company-card" href="#" onclick="showDetail(${company.id}); return false;">
+                    <img class="company-logo" src="${company.logo}" alt="${company.name}" />
+                    <div class="company-info">
+                        <h3 class="company-name">${company.name}</h3>
+                        <div class="tags">
+                            ${company.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function showDetail(id) {
+            const company = companies.find(c => c.id === id);
+            if (company) {
+                document.getElementById('companyName').textContent = company.name;
+                document.getElementById('companyList').style.display = 'none';
+                document.getElementById('companyDetail').style.display = 'block';
+            }
+        }
+
+        function showList() {
+            document.getElementById('companyList').style.display = 'block';
+            document.getElementById('companyDetail').style.display = 'none';
+        }
+
+        // 初始化显示公司列表
+        renderCompanies();
+    </script>
+</body>
+</html> 
